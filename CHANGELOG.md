@@ -2,19 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](https://semver.org/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
----
-
-## [v1.0.0] - 2025-09-20
+## [1.1.0] - 2025-09-21
 
 ### Added
-- Initial extraction of **Entiqon CLI** as a standalone module (`github.com/entiqon/cli`).
-- Introduced the first Go-native binary:
-    - **GoTestX** — Go Test eXtended tool with coverage support.
-- Integrated existing CLI helpers (Git, release, coverage, Docker) as Bash utilities, with migration to Go planned in future versions.
+- **Quiet mode summary output**: `-q` now always prints a concise result:
+  - ✅ success if all tests passed
+  - coverage % if `-c` is enabled
+  - ❌ failure with hint to rerun without `-q`
+- **Sample Output section** in README for clearer documentation.
 
-### Notes
-- Consolidates CLI history from the `entiqon` monorepo.
-- Establishes baseline for future migration of Bash tools to Go-native binaries.
+### Changed
+- **`-C` flag renamed to `-V` (clean-view)** to avoid confusion with `-c` (coverage).
+  - `-V` removes `[no test files]` lines from output.
+  - Works in combination with `-q` and `-c`.
+- Quiet mode errors (invalid path, no Go files, test failures) are now unified:
+  ```
+  ❌ Tests failed (use without -q to see details)
+  ```
+
+### Fixed
+- Improved test coverage:
+  - Covered quiet mode failure branch.
+  - Covered default `./...` package expansion.
+  - Covered ellipsis (`./...`) handling in arguments.
+
+## [1.0.0] - 2025-09-18
+
+### Added
+- Initial release of **GoTestX**.
+- Extended `go test` with:
+  - Coverage reporting (`-c`).
+  - Open coverage in browser on macOS (`-o`).
+  - Quiet mode (`-q`).
+  - Clean output (`-C`).
+- Support for combined flags (e.g. `-cq`, `-coq`, `-cC`).
+- Smart package detection and validation.

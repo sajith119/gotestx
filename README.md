@@ -6,7 +6,7 @@
 [![Build Status](https://github.com/entiqon/gotestx/actions/workflows/ci.yml/badge.svg)](https://github.com/entiqon/gotestx/actions)
 [![Codecov](https://codecov.io/gh/entiqon/gotestx/branch/main/graph/badge.svg)](https://codecov.io/gh/entiqon/gotestx)
 
-GoTestX extends the standard [`go test`](https://pkg.go.dev/cmd/go#hdr-Test_packages) command with a simpler, more versatile interface.
+GoTestX extends the standard [`go test`](https://pkg.go.dev/cmd/go#hdr-Test_packages) command with a simpler, more versatile interface.  
 It adds optional coverage reporting, quiet mode, and clean output filtering — while remaining fully compatible with `go test`.
 
 ---
@@ -15,13 +15,15 @@ It adds optional coverage reporting, quiet mode, and clean output filtering — 
 
 * **Coverage mode** (`-c`): generates `coverage.out` with `-covermode=atomic`.
 * **Open coverage** (`-o`): opens the HTML coverage report in a browser (macOS only).
-* **Quiet mode** (`-q`): suppresses info logs, only shows test results and errors.
-* **Clean mode** (`-C`): removes `? … [no test files]` lines for cleaner output.
-* **Flag combinations**: short flags can be combined (e.g. `-cq`, `-coq`, `-cC`).
+* **Quiet mode** (`-q`): suppresses verbose chatter, but always reports:
+  * ✅ success if all tests passed
+  * coverage % if `-c` is enabled
+  * ❌ failure (with hint to rerun without `-q`)
+* **Clean view** (`-V`): removes `? … [no test files]` lines for cleaner output.
+* **Flag combinations**: short flags can be combined (e.g. `-cq`, `-coq`, `-cVq`).
 * **Smart package detection**:
-
-    * Expands `./pkg` → `./pkg/...` if root has no Go files but subpackages do.
-    * Reports errors if a path doesn’t exist or has no Go files.
+  * Expands `./pkg` → `./pkg/...` if root has no Go files but subpackages do.
+  * Reports errors if a path doesn’t exist or has no Go files.
 
 ---
 
@@ -52,8 +54,8 @@ Options:
 ```
   -c, --with-coverage   Run tests with coverage report generation (coverage.out)
   -o, --open-coverage   Open coverage report in browser (macOS only, implies -c)
-  -q, --quiet           Suppress info messages (only errors and test output shown)
-  -C, --clean           Suppress 'no test files' lines for cleaner output
+  -q, --quiet           Suppress verbose output, only show summary/coverage/fail
+  -V, --clean-view      Suppress 'no test files' lines for cleaner output
   -h, --help            Show this help
   -v, --version         Show version info
 ```
@@ -74,7 +76,7 @@ Run tests with coverage:
 gotestx -c ./...
 ```
 
-Run quietly with coverage:
+Run quietly with coverage (only one summary line):
 
 ```bash
 gotestx -cq ./...
@@ -89,14 +91,51 @@ gotestx -o ./...
 Run with clean output (no `[no test files]` lines):
 
 ```bash
-gotestx -C ./...
+gotestx -V ./...
 ```
 
-Combined:
+Combine flags:
 
 ```bash
-gotestx -cCq ./...
+gotestx -cVq ./...
 ```
+
+---
+
+## 🖥 Sample Output
+
+Normal run:
+
+```
+Running tests normally across: ./internal/...
+ok  	github.com/entiqon/gotestx/internal	0.359s
+```
+
+Quiet run:
+
+```
+✅ Tests finished successfully
+```
+
+Quiet + coverage:
+
+```
+ok  	github.com/entiqon/gotestx/internal	0.359s	coverage: 100.0% of statements
+```
+
+Quiet with failure:
+
+```
+❌ Tests failed (use without -q to see details)
+```
+
+Clean view:
+
+```
+ok  	github.com/entiqon/gotestx/internal/join	0.01s
+```
+
+(no `[no test files]` lines)
 
 ---
 
@@ -125,5 +164,5 @@ go test ./internal/... -v
 
 ## 📄 License
 
-Part of the [Entiqon Project](https://github.com/entiqon).
+Part of the [Entiqon Project](https://github.com/entiqon).  
 Licensed under the MIT License.

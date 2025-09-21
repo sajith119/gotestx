@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	Version     = "1.0.0"
+	Version     = "1.1.0"
 	ToolName    = "GoTestX"
 	Author      = "Entiqon Project Team"
 	Description = "Go Test eXtended tool with coverage support"
@@ -37,8 +37,8 @@ Usage: %s [options] [packages]
 Options:
   -c, --with-coverage   Run tests with coverage report generation (coverage.out)
   -o, --open-coverage   Open coverage report in browser (macOS only, implies -c)
-  -q, --quiet           Suppress info messages (only errors and test output shown)
-  -C, --clean           Suppress 'no test files' lines for cleaner output
+  -q, --quiet           Suppress verbose test chatter (only summary shown)
+  -V, --clean-view      Suppress 'no test files' lines for cleaner output
   -h, --help            Show this help
   -v, --version         Show version info
 `, ToolName, Version, Description, Author, ToolName)
@@ -51,7 +51,7 @@ func versionInfo(w io.Writer) {
 
 // Run executes gotestx with given args, stdout/stderr, returns exit code
 func Run(args []string, stdout, stderr io.Writer) int {
-	var withCoverage, openCoverage, quiet, clean bool
+	var withCoverage, openCoverage, quiet, cleanView bool
 	var packages []string
 
 	for i := 0; i < len(args); i++ {
@@ -69,10 +69,10 @@ func Run(args []string, stdout, stderr io.Writer) int {
 			openCoverage = true
 		case arg == "-q" || arg == "--quiet":
 			quiet = true
-		case arg == "-C" || arg == "--clean":
-			clean = true
+		case arg == "-V" || arg == "--clean-view":
+			cleanView = true
 		case strings.HasPrefix(arg, "-"):
-			// Handle combined short flags (-cqC)
+			// Handle combined short flags (-cqV)
 			flags := arg[1:]
 			for _, f := range flags {
 				switch f {
@@ -82,8 +82,8 @@ func Run(args []string, stdout, stderr io.Writer) int {
 					openCoverage = true
 				case 'q':
 					quiet = true
-				case 'C':
-					clean = true
+				case 'V':
+					cleanView = true
 				default:
 					_, _ = fmt.Fprintf(stderr, "Error: Unknown short option: -%c\n", f)
 					usage(stderr)
@@ -107,7 +107,11 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		}
 		st, err := os.Stat(pkg)
 		if err != nil || !st.IsDir() {
-			_, _ = fmt.Fprintf(stderr, "Error: Package path '%s' does not exist.\n", pkg)
+			if quiet {
+				_, _ = fmt.Fprintln(stderr, "❌ Tests failed (use without -q to see details)")
+			} else {
+				_, _ = fmt.Fprintf(stderr, "Error: Package path '%s' does not exist.\n", pkg)
+			}
 			return 1
 		}
 		matches, _ := filepath.Glob(filepath.Join(pkg, "*.go"))
@@ -151,25 +155,18 @@ func Run(args []string, stdout, stderr io.Writer) int {
 	}
 
 	var buf bytes.Buffer
-	if clean {
+	if cleanView || quiet {
 		cmd.Stdout = &buf
 		cmd.Stderr = &buf
-	} else if quiet {
-		cmd.Stdout = io.Discard
-		cmd.Stderr = io.Discard
 	} else {
 		cmd.Stdout = stdout
 		cmd.Stderr = stderr
 	}
 
-	if err := cmd.Run(); err != nil {
-		if !quiet {
-			_, _ = fmt.Fprintf(stderr, "Error: go test failed: %v\n", err)
-		}
-		return 1
-	}
+	err := cmd.Run()
 
-	if clean {
+	// Clean view filtering
+	if cleanView && !quiet {
 		scanner := bufio.NewScanner(&buf)
 		for scanner.Scan() {
 			line := scanner.Text()
@@ -180,22 +177,46 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		}
 	}
 
-	if withCoverage {
-		if !quiet {
-			_, _ = fmt.Fprintln(stdout, "Coverage report saved as coverage.out")
-			_, _ = fmt.Fprintln(stdout, "Run 'go tool cover -html=coverage.out' to view it")
+	// Quiet summary mode
+	if quiet {
+		lines := strings.Split(strings.TrimSpace(buf.String()), "\n")
+		if err != nil {
+			_, _ = fmt.Fprintln(stderr, "❌ Tests failed (use without -q to see details)")
+			return 1
 		}
-		if openCoverage {
-			if !quiet {
-				_, _ = fmt.Fprintln(stdout, "Opening coverage report in browser...")
+		if withCoverage {
+			// Print last line containing coverage info
+			for i := len(lines) - 1; i >= 0; i-- {
+				if strings.Contains(lines[i], "coverage:") {
+					_, _ = fmt.Fprintln(stdout, lines[i])
+					break
+				}
 			}
-			openCmd := commandRunner("go", "tool", "cover", "-html=coverage.out")
-			openCmd.Stdout = stdout
-			openCmd.Stderr = stderr
-			if err := openCmd.Run(); err != nil {
-				_, _ = fmt.Fprintf(stderr, "Error: failed to open coverage report: %v\n", err)
-				return 1
-			}
+		} else {
+			_, _ = fmt.Fprintln(stdout, "✅ Tests finished successfully")
+		}
+	}
+
+	if err != nil && !quiet {
+		_, _ = fmt.Fprintf(stderr, "Error: go test failed: %v\n", err)
+		return 1
+	}
+
+	if withCoverage && !quiet {
+		_, _ = fmt.Fprintln(stdout, "Coverage report saved as coverage.out")
+		_, _ = fmt.Fprintln(stdout, "Run 'go tool cover -html=coverage.out' to view it")
+	}
+
+	if withCoverage && openCoverage {
+		if !quiet {
+			_, _ = fmt.Fprintln(stdout, "Opening coverage report in browser...")
+		}
+		openCmd := commandRunner("go", "tool", "cover", "-html=coverage.out")
+		openCmd.Stdout = stdout
+		openCmd.Stderr = stderr
+		if err := openCmd.Run(); err != nil {
+			_, _ = fmt.Fprintf(stderr, "Error: failed to open coverage report: %v\n", err)
+			return 1
 		}
 	}
 
